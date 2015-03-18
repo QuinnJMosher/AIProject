@@ -90,7 +90,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\Agent.cpp" />
+    <ClCompile Include="source\Entity.cpp" />
+    <ClCompile Include="source\Graph.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\Wall.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\Agent.h" />
+    <ClInclude Include="include\Entity.h" />
+    <ClInclude Include="include\Graph.h" />
+    <ClInclude Include="include\Point.h" />
+    <ClInclude Include="include\Wall.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
