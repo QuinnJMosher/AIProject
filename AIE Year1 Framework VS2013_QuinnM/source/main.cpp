@@ -13,6 +13,11 @@ void Update();
 void Draw();
 
 void DrawGraph();
+void AddAgent();//at mouse pos
+void RemoveEntity();//nearest to mouse pos
+
+Entity* FindClosestEntity();//to mouse pos
+Agent* FindClosestAgent();//to mouse pos
 
 //constant vars
 const int SCREEN_MAX_X = 900, SCREEN_MAX_Y = 600;
@@ -105,6 +110,7 @@ void Update() {
 	} else if (IsKeyDown('T')) {
 		if (!inputDown) {
 			//testing button
+			AddAgent();
 			inputDown = true;
 		}
 	} else {
@@ -149,4 +155,53 @@ void DrawGraph() {
 			}
 		}
 	}
+}
+
+void AddAgent() {
+	double mouseX, mouseY;
+	GetMouseLocation(mouseX, mouseY);
+
+	entities.emplace_back(new Agent(mouseX, SCREEN_MAX_Y - mouseY));
+}
+
+void RemoveEntity() {
+
+
+}
+
+Entity* FindClosestEntity() {
+	double mouseX, mouseY;
+	GetMouseLocation(mouseX, mouseY);
+
+	Entity* nearest = nullptr;
+	float nearestDistance = FLT_MAX;
+	for (int i = 0; i < entities.size(); i++) {
+		float currentDistance = std::sqrt((mouseX * entities[i]->position.x) + (mouseY * entities[i]->position.y));
+		if (currentDistance < nearestDistance) {
+			nearest = entities[i];
+			nearestDistance = currentDistance;
+		}
+	}
+
+	return nearest;
+}
+
+Agent* FindClosestAgent() {
+	double mouseX, mouseY;
+	GetMouseLocation(mouseX, mouseY);
+
+	Agent* nearest = nullptr;
+	float nearestDistance = FLT_MAX;
+	for (int i = 0; i < entities.size(); i++) {
+		Agent* current = dynamic_cast<Agent*>(entities[i]);
+		if (current != nullptr) {
+			float currentDistance = std::sqrt((mouseX * entities[i]->position.x) + (mouseY * entities[i]->position.y));
+			if (currentDistance < nearestDistance) {
+				nearest = current;
+				nearestDistance = currentDistance;
+			}
+		}
+	}
+
+	return nearest;
 }
