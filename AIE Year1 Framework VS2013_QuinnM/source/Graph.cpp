@@ -7,6 +7,7 @@ GrNode::GrNode(int in_name) {
 	posY = 0.0f;
 	previousNode = nullptr;
 	gScore = 0;
+	canTraverse = true;
 }
 
 GrNode::GrNode(int in_name, float in_x, float in_y) {
@@ -16,6 +17,7 @@ GrNode::GrNode(int in_name, float in_x, float in_y) {
 	posY = in_y;
 	previousNode = nullptr;
 	gScore = 0;
+	canTraverse = true;
 }
 
 GrNode::~GrNode() { }
@@ -75,6 +77,14 @@ void Graph::GetNodePos(int in_name, float& in_x, float& in_y) {
 	GrNode* target = FindNodeByName(in_name);
 	in_x = target->posX;
 	in_y = target->posY;
+}
+
+void Graph::ToggleNode(int in_name) {
+	GrNode* target = FindNodeByName(in_name);
+	target->canTraverse = !target->canTraverse;
+}
+bool Graph::CanTraverse(int in_name) {
+	return FindNodeByName(in_name)->canTraverse;
 }
 
 void Graph::AddEdge(int in_name_from, int in_name_to, float in_cost) {
@@ -181,7 +191,9 @@ bool Graph::IsConnectedDFS(int in_name_start, int in_name_end) {
 		}
 
 		for (int i = 0; i < current->edges.size(); ++i) {
-			nodeStack.push(current->edges[i].end);
+			if (current->edges[i].end->canTraverse) {
+				nodeStack.push(current->edges[i].end);
+			}
 		}
 	}
 
@@ -217,7 +229,9 @@ int Graph::NodeDistanceDFS(int in_name_start, int in_name_end) {
 
 		if (current->edges.size() > 0) {
 			for (int i = 0; i < current->edges.size(); ++i) {
-				nodeStack.push(current->edges[i].end);
+				if (current->edges[i].end->canTraverse) {
+					nodeStack.push(current->edges[i].end);
+				}
 			}
 		} else {
 			path.erase(path.end());
@@ -278,7 +292,9 @@ int Graph::TraverseCostDFS(int in_name_start, int in_name_end) {
 
 		if (current->edges.size() > 0) {
 			for (int i = 0; i < current->edges.size(); ++i) {
-				nodeStack.push(current->edges[i].end);
+				if (current->edges[i].end->canTraverse) {
+					nodeStack.push(current->edges[i].end);
+				}
 			}
 		}
 		else {
@@ -344,6 +360,49 @@ void Graph::CreateGrid(int in_nodesWide, int in_nodesTall, float in_width, float
 	}
 }
 
+void Graph::CreateGrid(int in_nodesWide, int in_nodesTall, float in_width, float in_height, float in_startX, float in_startY) {
+	nodes.clear();
+	for (float i = 0; i < in_nodesWide; i++) {
+		for (float j = 0; j < in_nodesTall; j++) {
+			AddNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY);
+		}
+	}
+
+	for (float i = 0; i < in_nodesWide; i++) {
+		for (float j = 0; j < in_nodesTall; j++) {
+
+			if (i > 0) { //left one
+				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i - 1) / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY));
+			}
+			if (j > 0) {//up one
+				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode((i / in_nodesWide * in_width) + in_startX, ((j - 1) / in_nodesTall * in_height) + in_startY));
+			}
+
+			if (i < in_nodesWide - 1) {//right one
+				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i + 1) / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY));
+			}
+			if (j < in_nodesTall - 1) {//down one
+				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode((i / in_nodesWide * in_width) + in_startX, ((j + 1) / in_nodesTall * in_height) + in_startY));
+			}
+
+			if (i > 0 && j > 0) {//up and left one
+				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i - 1) / in_nodesWide * in_width) + in_startX, ((j - 1) / in_nodesTall * in_height) + in_startY));
+			}
+			if (i < in_nodesWide - 1 && j > 0) {//up and right one
+				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i + 1) / in_nodesWide * in_width) + in_startX, ((j - 1) / in_nodesTall * in_height) + in_startY));
+			}
+
+			if (i > 0 && j < in_nodesTall - 1) {//down and left one
+				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i - 1) / in_nodesWide * in_width) + in_startX, ((j + 1) / in_nodesTall * in_height) + in_startY));
+			}
+			if (i < in_nodesWide - 1 && j < in_nodesTall - 1) {//down and right one
+				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i + 1) / in_nodesWide * in_width) + in_startX, ((j + 1) / in_nodesTall * in_height) + in_startY));
+			}
+
+		}
+	}
+}
+
 int Graph::NearestNode(float in_x, float in_y) {
 	int closestNode = -1;
 	float shortestDistance = FLT_MAX;
@@ -383,30 +442,32 @@ std::vector<int> Graph::FindPath(int in_name_start, int in_name_end) {
 
 			//loop through edges
 			for (int i = 0; i < current->edges.size(); i++) {
+				if (current->edges[i].end->canTraverse) {//if the node is traverseable
 
-				//get cost to traverse
-				int cost = current->gScore + current->edges[i].cost + 1;
+					//get cost to traverse
+					int cost = current->gScore + current->edges[i].cost + 1;
 
-				//calculate heuristic (by distance from target)
-				int heuristic = (std::abs(current->edges[i].end->posX - end->posX) + std::abs(current->edges[i].end->posY - end->posY)) / 100;
+					//calculate heuristic (by distance from target)
+					int heuristic = (std::abs(current->edges[i].end->posX - end->posX) + std::abs(current->edges[i].end->posY - end->posY)) / 100;
 
-				cost += heuristic;
+					cost += heuristic;
 
-				//if the cost calculated is less that the end's current cost:
-				if (cost < current->edges[i].end->gScore /*+ heuristic*/) {
+					//if the cost calculated is less that the end's current cost:
+					if (cost < current->edges[i].end->gScore /*+ heuristic*/) {
 
-					//set it's previousNode to the current one
-					current->edges[i].end->previousNode = current;
+						//set it's previousNode to the current one
+						current->edges[i].end->previousNode = current;
 
-					//set it's gScore to the cost calculated
-					current->edges[i].end->gScore = cost;
+						//set it's gScore to the cost calculated
+						current->edges[i].end->gScore = cost;
 
-					//if it hasent been traversed add it the the queue
-					if (current->edges[i].end->visited != true) {
-						priorityQueue.push(current->edges[i].end);
-					}//if not visited
+						//if it hasent been traversed add it the the queue
+						if (current->edges[i].end->visited != true) {
+							priorityQueue.push(current->edges[i].end);
+						}//if not visited
 
-				}//if traverse cost is cheaper
+					}//if traverse cost is cheaper
+				}
 			}//for loop
 
 		}//if not visited

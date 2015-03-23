@@ -32,6 +32,7 @@ public:
 	//dijkstra's algorithm
 	GrNode* previousNode;
 	int gScore;
+	bool canTraverse;
 
 	std::vector<GrEdge>edges;
 };
@@ -47,6 +48,9 @@ public:
 	void SetNodePos(int in_name, float in_x, float in_y);
 	void GetNodePos(int in_name, float& in_x, float& in_y);
 	std::vector<int> GetNodesConectedTo(int in_name);//returns list of node names
+
+	void ToggleNode(int in_name);
+	bool CanTraverse(int in_name);
 
 	int NearestNode(float in_x, float in_y);//returns node name
 
@@ -64,6 +68,7 @@ public:
 	std::vector<int> FindPath(int in_name_start, int in_name_end);
 
 	void CreateGrid(int in_nodesWide, int in_nodesTall, float in_width, float in_height);
+	void CreateGrid(int in_nodesWide, int in_nodesTall, float in_width, float in_height, float in_startX, float in_startY);
 
 	std::vector<int> GetNames();
 

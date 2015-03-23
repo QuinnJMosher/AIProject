@@ -56,8 +56,6 @@ int main( int argc, char* argv[] )
 
 		Draw();
 
-        ClearScreen();
-
     } while(!FrameworkUpdate());
 
     Shutdown();
@@ -78,13 +76,8 @@ void StartUp() {
 	agentptr->AddPursue(dynamic_cast<Agent*>(entities[0]), 1.0f);
 	agentptr->SetSpeedCap(10);
 
-	//add a wall
-	entities.emplace_back(new Wall(450, 300, 40, 40));
-
 	//add graph nodes
-	paths.AddNode(50, 50);
-	paths.AddNode(40, 300);
-	paths.AddEdge(1, 2);
+	paths.CreateGrid(7, 5, SCREEN_MAX_X, SCREEN_MAX_Y, ((SCREEN_MAX_X / 7) / 2), ((SCREEN_MAX_Y / 5) / 2));
 
 	//set Graph sprite
 	graphSprite = CreateSprite("images/invaders/invaders_7_01.png", 10, 10, true);
@@ -109,6 +102,11 @@ void Update() {
 			drawGraph = !drawGraph;
 			inputDown = true;
 		}
+	} else if (IsKeyDown('T')) {
+		if (!inputDown) {
+			//testing button
+			inputDown = true;
+		}
 	} else {
 		inputDown = false;
 	}
@@ -122,6 +120,8 @@ void Update() {
 }
 
 void Draw() {
+	ClearScreen();
+
 	//draw entities
 	for (int i = 0; i < entities.size(); i++) {
 		entities[i]->Draw();
@@ -141,8 +141,12 @@ void DrawGraph() {
 		vector<int> links = paths.GetNodesConectedTo(graphNames[i]);
 
 		for (int j = 0; j < links.size(); j++) {
-			paths.GetNodePos(links[i], x2, y2);
-			DrawLine(x, y, x2, y2, SColour(0, 255, 0, 255));
+			paths.GetNodePos(links[j], x2, y2);
+			if (paths.CanTraverse(graphNames[i]) && paths.CanTraverse(links[j])) {
+				DrawLine(x, y, x2, y2, SColour(0, 50, 0, 255));
+			} else {
+				DrawLine(x, y, x2, y2, SColour(50, 0, 0, 255));
+			}
 		}
 	}
 }
