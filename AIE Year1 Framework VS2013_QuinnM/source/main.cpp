@@ -15,6 +15,7 @@ void Draw();
 void DrawGraph();
 void AddAgent();//at mouse pos
 void RemoveEntity();//nearest to mouse pos
+void RemoveAgent();//nearest to mouse pos
 
 Entity* FindClosestEntity();//to mouse pos
 Agent* FindClosestAgent();//to mouse pos
@@ -81,6 +82,8 @@ void StartUp() {
 	agentptr->AddPursue(dynamic_cast<Agent*>(entities[0]), 1.0f);
 	agentptr->SetSpeedCap(10);
 
+	entities.emplace_back(new Wall(30, 30, 40, 40));
+
 	//add graph nodes
 	paths.CreateGrid(7, 5, SCREEN_MAX_X, SCREEN_MAX_Y, ((SCREEN_MAX_X / 7) / 2), ((SCREEN_MAX_Y / 5) / 2));
 
@@ -107,10 +110,19 @@ void Update() {
 			drawGraph = !drawGraph;
 			inputDown = true;
 		}
+	} else if (IsKeyDown('A')) {
+		if (!inputDown) {
+			AddAgent();
+			inputDown = true;
+		}
+	} else if (IsKeyDown('Z')) {
+		if (!inputDown) {
+			RemoveAgent();
+			inputDown = true;
+		}
 	} else if (IsKeyDown('T')) {
 		if (!inputDown) {
 			//testing button
-			AddAgent();
 			inputDown = true;
 		}
 	} else {
@@ -165,8 +177,30 @@ void AddAgent() {
 }
 
 void RemoveEntity() {
+	if (entities.size() > 0) {
+		Entity* entityToRemove = FindClosestEntity();
+		for (int i = 0; i < entities.size(); i++) {
+			if (entities[i] == entityToRemove) {
+				entities.erase(entities.begin() + i);
+				delete entityToRemove;
+				break;
+			}
+		}
+	}
 
+}
 
+void RemoveAgent() {
+	if (entities.size() > 0) {
+		Entity* agentToRemove = FindClosestAgent();
+		for (int i = 0; i < entities.size(); i++) {
+			if (entities[i] == agentToRemove) {
+				entities.erase(entities.begin() + i);
+				delete agentToRemove;
+				break;
+			}
+		}
+	}
 }
 
 Entity* FindClosestEntity() {
@@ -195,7 +229,7 @@ Agent* FindClosestAgent() {
 	for (int i = 0; i < entities.size(); i++) {
 		Agent* current = dynamic_cast<Agent*>(entities[i]);
 		if (current != nullptr) {
-			float currentDistance = std::sqrt((mouseX * entities[i]->position.x) + (mouseY * entities[i]->position.y));
+			float currentDistance = std::sqrt(std::pow(mouseX - entities[i]->position.x, 2) + std::pow((SCREEN_MAX_Y - mouseY) - entities[i]->position.y, 2));
 			if (currentDistance < nearestDistance) {
 				nearest = current;
 				nearestDistance = currentDistance;

@@ -1,6 +1,23 @@
-﻿Build started 3/23/2015 11:43:40 AM.
+﻿Build started 3/23/2015 2:08:34 PM.
      1>Project "C:\Users\quinn.mosher\Documents\GitHub\AIProject\AIE Year1 Framework VS2013_QuinnM\AIE Template.vcxproj" on node 2 (Build target(s)).
-     1>Link:
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /I./ /I./include/ /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"obj\\" /Fd"obj\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt source\main.cpp
+         main.cpp
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(88): warning C4244: 'argument' : conversion from 'const int' to 'float', possible loss of data
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(134): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(144): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(155): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(161): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(164): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(166): warning C4244: 'argument' : conversion from 'float' to 'int', possible loss of data
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(176): warning C4244: 'argument' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(182): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(196): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(212): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(213): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(229): warning C4018: '<' : signed/unsigned mismatch
+     1>c:\users\quinn.mosher\documents\github\aiproject\aie year1 framework vs2013_quinnm\source\main.cpp(232): warning C4244: 'initializing' : conversion from 'double' to 'float', possible loss of data
+       Link:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"bin\AIE Template_d.exe" /INCREMENTAL /NOLOGO /LIBPATH:./libs AIE_1st_Year_Framework_d.lib kernel32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"bin\AIE Template_d.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"bin\AIE Template_d.lib" /MACHINE:X86 obj\Agent.obj
          obj\Entity.obj
          obj\Graph.obj
@@ -39,4 +56,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.84
+Time Elapsed 00:00:01.26
