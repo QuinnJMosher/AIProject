@@ -385,19 +385,19 @@ void Graph::CreateGrid(int in_nodesWide, int in_nodesTall, float in_width, float
 				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode((i / in_nodesWide * in_width) + in_startX, ((j + 1) / in_nodesTall * in_height) + in_startY));
 			}
 
-			if (i > 0 && j > 0) {//up and left one
-				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i - 1) / in_nodesWide * in_width) + in_startX, ((j - 1) / in_nodesTall * in_height) + in_startY));
-			}
-			if (i < in_nodesWide - 1 && j > 0) {//up and right one
-				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i + 1) / in_nodesWide * in_width) + in_startX, ((j - 1) / in_nodesTall * in_height) + in_startY));
-			}
+			//if (i > 0 && j > 0) {//up and left one
+			//	AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i - 1) / in_nodesWide * in_width) + in_startX, ((j - 1) / in_nodesTall * in_height) + in_startY));
+			//}
+			//if (i < in_nodesWide - 1 && j > 0) {//up and right one
+			//	AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i + 1) / in_nodesWide * in_width) + in_startX, ((j - 1) / in_nodesTall * in_height) + in_startY));
+			//}
 
-			if (i > 0 && j < in_nodesTall - 1) {//down and left one
-				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i - 1) / in_nodesWide * in_width) + in_startX, ((j + 1) / in_nodesTall * in_height) + in_startY));
-			}
-			if (i < in_nodesWide - 1 && j < in_nodesTall - 1) {//down and right one
-				AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i + 1) / in_nodesWide * in_width) + in_startX, ((j + 1) / in_nodesTall * in_height) + in_startY));
-			}
+			//if (i > 0 && j < in_nodesTall - 1) {//down and left one
+			//	AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i - 1) / in_nodesWide * in_width) + in_startX, ((j + 1) / in_nodesTall * in_height) + in_startY));
+			//}
+			//if (i < in_nodesWide - 1 && j < in_nodesTall - 1) {//down and right one
+			//	AddEdge(NearestNode((i / in_nodesWide * in_width) + in_startX, (j / in_nodesTall * in_height) + in_startY), NearestNode(((i + 1) / in_nodesWide * in_width) + in_startX, ((j + 1) / in_nodesTall * in_height) + in_startY));
+			//}
 
 		}
 	}

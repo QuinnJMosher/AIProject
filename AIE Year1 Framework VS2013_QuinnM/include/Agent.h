@@ -30,6 +30,8 @@ public:
 
 	void SetSpeedCap(float in_speedCap);
 
+	void ClearBehaviors();
+
 	void AddPursue(Agent* in_target, float in_strength);
 	void AddEvade(Agent* in_target, float in_strength);
 	void AddWander(float in_circDist, float in_circRadius, float in_jitter, float in_strength);

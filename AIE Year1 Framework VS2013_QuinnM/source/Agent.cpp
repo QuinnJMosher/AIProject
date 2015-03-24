@@ -40,6 +40,10 @@ void Agent::SetSpeedCap(float in_speedCap) {
 	maxVelocity = in_speedCap;
 }
 
+void Agent::ClearBehaviors() {
+	behaiviourArray.clear();
+}
+
 void Agent::AddPursue(Agent* in_target, float in_strength) {
 	behaiviourArray.emplace_back(Behaviour(Pursue, in_target, in_strength));
 }
