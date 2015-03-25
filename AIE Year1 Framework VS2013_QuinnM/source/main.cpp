@@ -92,7 +92,7 @@ int main( int argc, char* argv[] )
 void StartUp() {
 	//add graph nodes
 	paths.CreateGrid(7, 5, SCREEN_MAX_X, SCREEN_MAX_Y, ((SCREEN_MAX_X / 7) / 2), ((SCREEN_MAX_Y / 5) / 2));
-
+	Agent::SetGraph(&paths);
 	//set Graph sprite
 	graphSprite = CreateSprite("images/invaders/invaders_7_01.png", 10, 10, true);
 	//sync graph name vector
@@ -434,7 +434,11 @@ void AddWall() {
 		paths.GetNodePos(nearestNodeName, x, y);//get actual node pos
 		paths.ToggleNode(nearestNodeName);
 
-		entities.emplace_back(new Wall(x, y, (SCREEN_MAX_X / 7), (SCREEN_MAX_Y / 5)));//add wall
+
+		Wall* wall = new Wall(x, y, (SCREEN_MAX_X / 7), (SCREEN_MAX_Y / 5));
+		entities.emplace_back(wall);//add wall
+		Agent::RegisterWall(wall);
+
 	}
 }
 
@@ -453,6 +457,7 @@ void RemoveWall() {
 					break;
 				}
 			}
+			Agent::RemoveWall(nearestWall);
 		}
 	}
 }

@@ -3,6 +3,7 @@
 
 #include "Entity.h" //parent
 #include "Graph.h"
+#include "Wall.h"
 #include "AIE.h"
 #include <random>
 #include <ctime>
@@ -47,6 +48,8 @@ public:
 	static void SetFlockBallence(float in_separation, float in_alignment, float in_cohesion);
 	static void SetNeighbourhoodSize(float in_size);
 	static void SetGraph(Graph* pt_Graph);
+	static void RegisterWall(Wall* pt_wall);
+	static void RemoveWall(Wall* pt_wall);
 
 	void AddForce(Point force);
 	void SetForce(Point force);
@@ -71,7 +74,7 @@ private:
 	Point Cohesion(float in_power, std::vector<Agent*>& ref__neighbourhood);
 
 	//GoTo stuff
-	Point GetGoTo();
+	Point GetGoTo(Point& in_target);
 	Point GoToTarget;
 	float goToPower;
 	static float goToGoalRadius;
@@ -79,6 +82,8 @@ private:
 	//pathfinding
 	static Graph* pathNodes;
 	static std::vector<int>Path;
+	static std::vector<Wall*>World;
+	int frame;
 
 	//physics
 	Point velocity;
