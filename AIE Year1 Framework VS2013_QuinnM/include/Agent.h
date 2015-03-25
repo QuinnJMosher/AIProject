@@ -2,6 +2,7 @@
 #define _Agent_h_
 
 #include "Entity.h" //parent
+#include "Graph.h"
 #include "AIE.h"
 #include <random>
 #include <ctime>
@@ -36,6 +37,7 @@ public:
 	void AddEvade(Agent* in_target, float in_strength);
 	void AddWander(float in_circDist, float in_circRadius, float in_jitter, float in_strength);
 	void AddToFlock(float in_strength);
+	void GoTo(Point in_position, float in_power);
 
 	void RemovePursue(Agent* in_target);
 	void RemoveEvade(Agent* in_target);
@@ -44,6 +46,7 @@ public:
 
 	static void SetFlockBallence(float in_separation, float in_alignment, float in_cohesion);
 	static void SetNeighbourhoodSize(float in_size);
+	static void SetGraph(Graph* pt_Graph);
 
 	void AddForce(Point force);
 	void SetForce(Point force);
@@ -67,6 +70,16 @@ private:
 	Point Alignment(float in_power, std::vector<Agent*>& ref_neighbourhood);
 	Point Cohesion(float in_power, std::vector<Agent*>& ref__neighbourhood);
 
+	//GoTo stuff
+	Point GetGoTo();
+	Point GoToTarget;
+	float goToPower;
+	static float goToGoalRadius;
+	
+	//pathfinding
+	static Graph* pathNodes;
+	static std::vector<int>Path;
+
 	//physics
 	Point velocity;
 	bool drag;
@@ -87,6 +100,7 @@ private:
 	static float cohesionPow;
 	static float neighbourhoodSize;
 
+	//static vars
 	static bool drawVelocity;
 
 	static float const resistance;

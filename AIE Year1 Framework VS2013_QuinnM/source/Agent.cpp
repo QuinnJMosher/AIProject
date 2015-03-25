@@ -13,6 +13,11 @@ float Agent::allignmentPow = 0.03;
 float Agent::cohesionPow = 0.45;
 float Agent::neighbourhoodSize = 70;
 
+float Agent::goToGoalRadius = 20;
+
+Graph* Agent::pathNodes = nullptr;
+std::vector<int> Agent::Path = std::vector<int>();
+
 Behaviour::Behaviour(BehaviourType in_type, Agent* in_target, float  in_strength) {
 	type = in_type;
 	target = in_target;
@@ -29,12 +34,19 @@ Agent::Agent(float in_x, float in_y) : Entity(in_x, in_y, 20, 20) {
 
 	behaiviourArray = std::vector<Behaviour>();
 
+	GoToTarget = Point(-1, -1);
+	goToPower = 0;
+
 	if (sprite == 0) {
 		sprite = CreateSprite(texture, 20, 20, true);
 	}
 }
 
 Agent::~Agent() { } 
+
+void Agent::SetGraph(Graph* pt_Graph) {
+	pathNodes = pt_Graph;
+}
 
 void Agent::SetSpeedCap(float in_speedCap) {
 	maxVelocity = in_speedCap;
@@ -45,6 +57,13 @@ void Agent::ClearBehaviors() {
 }
 
 void Agent::AddPursue(Agent* in_target, float in_strength) {
+	for (int i = 0; i < behaiviourArray.size(); i++) {
+		if (behaiviourArray[i].type == Pursue) {
+			behaiviourArray[i].strength = in_strength;
+			return;
+		}
+	}
+
 	behaiviourArray.emplace_back(Behaviour(Pursue, in_target, in_strength));
 }
 
@@ -124,6 +143,10 @@ void Agent::Update() {
 			velocity += GetFlock(maxVelocity * behaiviourArray[i].strength);
 			break;
 		}
+	}
+
+	if (GoToTarget.x != -1) {
+		velocity += GetGoTo();
 	}
 
 	speed = std::sqrt((velocity.x * velocity.x) + (velocity.y * velocity.y));
@@ -493,4 +516,41 @@ Point Agent::Cohesion(float in_power, std::vector<Agent*>& ref_neighbourhood) {
 	averagePos.y *= in_power;
 
 	return averagePos;
+}
+
+void Agent::GoTo(Point in_position, float in_power) {
+	goToPower = in_power;
+	GoToTarget = in_position;
+}
+
+Point Agent::GetGoTo() {
+	Point out_velocity = Point(0, 0);
+
+	//get target's position from the origin of position
+	Point targetDirectPos = (GoToTarget) - position;
+	float targetDirectDist = std::sqrt((targetDirectPos.x * targetDirectPos.x) + (targetDirectPos.y * targetDirectPos.y));
+
+	if (targetDirectDist <= goToGoalRadius) {
+		GoToTarget = Point(-1, -1);
+		return out_velocity;
+	}
+
+	if (targetDirectDist > goToPower) {//if far away then head there at max power
+		targetDirectPos.x /= targetDirectDist;
+		targetDirectPos.y /= targetDirectDist;
+
+		out_velocity.x = (targetDirectPos.x * goToPower);
+		out_velocity.y = (targetDirectPos.y * goToPower);
+
+	} else {//if they're close then compensate for distance
+		targetDirectPos.x /= targetDirectDist;
+		targetDirectPos.y /= targetDirectDist;
+
+		//add to velocity
+		out_velocity.x = (targetDirectPos.x * (goToPower - targetDirectDist));
+		out_velocity.y = (targetDirectPos.y * (goToPower - targetDirectDist));
+
+	}
+
+	return out_velocity;
 }
