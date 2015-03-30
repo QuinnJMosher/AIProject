@@ -13,7 +13,7 @@ float Agent::allignmentPow = 0.03;
 float Agent::cohesionPow = 0.45;
 float Agent::neighbourhoodSize = 70;
 
-float Agent::goToGoalRadius = 10;
+float Agent::goToGoalRadius = 40;
 
 Graph* Agent::pathNodes = nullptr;
 std::vector<int> Agent::Path = std::vector<int>();
@@ -60,6 +60,7 @@ void Agent::ClearBehaviors() {
 }
 
 void Agent::AddPursue(Agent* in_target, float in_strength) {
+	frame = 29;
 	for (int i = 0; i < behaiviourArray.size(); i++) {
 		if (behaiviourArray[i].type == Pursue) {
 			behaiviourArray[i].strength = in_strength;
@@ -151,22 +152,20 @@ void Agent::Update() {
 	float speed;
 
 	for (int i = 0; i < behaiviourArray.size(); i++) {
+		Agent* target = behaiviourArray[i].target;
 		switch (behaiviourArray[i].type) {
-
-		Agent* target;
 		case Pursue:
-			target = behaiviourArray[i].target;
-
 			if (frame % 30 == 0) {//if its time to check paths
 
-				for (int i = 0; i < World.size(); i++) {//see if the direct approach is posible
-					if (World[i]->RayCast(position, target->position)) {
+				for (int j = 0; j < World.size(); j++) {//see if the direct approach is posible
+					if (World[j]->RayCast(position, target->position)) {//if there's something in the way
 						//get nodes closest to positions
 						int startnode = pathNodes->NearestNode(position.x, position.y);
 						int endNode = pathNodes->NearestNode(target->position.x, target->position.y);
 
 						if (pathNodes->IsConnectedDFS(startnode, endNode)) {//if a path is posible
 							Path = pathNodes->FindPath(startnode, endNode);//find the path
+							goToPower = behaiviourArray[i].strength;
 							//smooth
 						}
 						break;
@@ -598,20 +597,18 @@ Point Agent::GetGoTo(Point& in_target) {
 		return out_velocity;
 	}
 
-	if (targetDirectDist > goToPower) {//if far away then head there at max power
-		targetDirectPos.x /= targetDirectDist;
-		targetDirectPos.y /= targetDirectDist;
+	targetDirectPos.x /= targetDirectDist;
+	targetDirectPos.y /= targetDirectDist;
 
+	if (targetDirectDist > goToGoalRadius * 2) {//if far away then head there at max power
 		out_velocity.x = (targetDirectPos.x * goToPower);
 		out_velocity.y = (targetDirectPos.y * goToPower);
 
 	} else {//if they're close then compensate for distance
-		targetDirectPos.x /= targetDirectDist;
-		targetDirectPos.y /= targetDirectDist;
 
 		//add to velocity
-		out_velocity.x = (targetDirectPos.x * (goToPower - targetDirectDist));
-		out_velocity.y = (targetDirectPos.y * (goToPower - targetDirectDist));
+		out_velocity.x = (targetDirectPos.x * (goToPower * 0.5f));
+		out_velocity.y = (targetDirectPos.y * (goToPower * 0.5f));
 
 	}
 
