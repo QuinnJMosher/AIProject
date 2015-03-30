@@ -42,6 +42,7 @@ unsigned int graphSprite = 0;
 bool inputDown = false;
 bool paused = false;
 bool drawGraph = false;
+bool drag = false;
 
 Agent* selected1 = nullptr;
 Agent* selected2 = nullptr;
@@ -134,6 +135,27 @@ void Update() {
 	} else if (IsKeyDown('X')) {
 		if (!inputDown) {//delete wall closest to mouse
 			RemoveWall();
+			inputDown = true;
+		}
+	} else if (IsKeyDown('N')) {
+		if (!inputDown) {//tell graph to pathfind with A*
+			paths.UseAStar();
+			inputDown = true;
+		}
+	} else if (IsKeyDown('M')) {
+		if (!inputDown) {//tell graph to pathfind with dijkstra's algorithm
+			paths.UseDijkstra();
+			inputDown = true;
+		}
+	} else if (IsKeyDown('D')) {
+		if (!inputDown) {//toggle drag on all agents 
+			drag = !drag;
+			for (int i = 0; i < entities.size(); i++) {
+				Agent* target = dynamic_cast<Agent*>(entities[i]);
+				if (target != nullptr) {
+					target->ToggleDrag();
+				}
+			}
 			inputDown = true;
 		}
 	} else if (GetMouseButtonDown(MOUSE_BUTTON_1)) {//select agent nearest to the mouse as RED
@@ -384,8 +406,10 @@ void AddAgent() {
 	GetMouseLocation(mouseX, mouseY);
 
 	Agent* newAgent = new Agent(mouseX, SCREEN_MAX_Y - mouseY);
-	newAgent->SetSpeedCap(10);
-	newAgent->ToggleDrag();
+	newAgent->SetSpeedCap(7);
+	if (drag == false) {
+		newAgent->ToggleDrag();
+	}
 
 	entities.emplace_back(newAgent);
 }

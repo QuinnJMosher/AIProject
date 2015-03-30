@@ -33,6 +33,7 @@ void GrNode::RemoveEdgesTo(int in_name) {
 
 Graph::Graph() {
 	nextNodeName = 1;
+	useHeuristic = true;
 }
 
 Graph::~Graph() {
@@ -417,6 +418,12 @@ int Graph::NearestNode(float in_x, float in_y) {
 	return closestNode;
 }
 
+void Graph::UseDijkstra() {
+	useHeuristic = false;
+}
+void Graph::UseAStar() {
+	useHeuristic = true;
+}
 
 std::vector<int> Graph::FindPath(int in_name_start, int in_name_end) {
 	PreparePathfind();
@@ -447,10 +454,12 @@ std::vector<int> Graph::FindPath(int in_name_start, int in_name_end) {
 					//get cost to traverse
 					int cost = current->gScore + current->edges[i].cost + 1;
 
-					//calculate heuristic (by distance from target)
-					int heuristic = (std::abs(current->edges[i].end->posX - end->posX) + std::abs(current->edges[i].end->posY - end->posY)) / 100;
+					if (useHeuristic) {
+						//calculate heuristic (by distance from target)
+						int heuristic = (std::abs(current->edges[i].end->posX - end->posX) + std::abs(current->edges[i].end->posY - end->posY)) / 100;
 
-					cost += heuristic;
+						cost += heuristic;
+					}
 
 					//if the cost calculated is less that the end's current cost:
 					if (cost < current->edges[i].end->gScore /*+ heuristic*/) {

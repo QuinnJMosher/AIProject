@@ -13,7 +13,7 @@ float Agent::allignmentPow = 0.03;
 float Agent::cohesionPow = 0.45;
 float Agent::neighbourhoodSize = 70;
 
-float Agent::goToGoalRadius = 40;
+float Agent::goToGoalRadius = 50;
 
 Graph* Agent::pathNodes = nullptr;
 std::vector<int> Agent::Path = std::vector<int>();
@@ -153,28 +153,33 @@ void Agent::Update() {
 
 	for (int i = 0; i < behaiviourArray.size(); i++) {
 		Agent* target = behaiviourArray[i].target;
+		int startNode, endNode;
 		switch (behaiviourArray[i].type) {
 		case Pursue:
-			if (frame % 30 == 0) {//if its time to check paths
+			//get nodes closest to positions
+			startNode = pathNodes->NearestNode(position.x, position.y);
+			endNode = pathNodes->NearestNode(target->position.x, target->position.y);
 
-				for (int j = 0; j < World.size(); j++) {//see if the direct approach is posible
-					if (World[j]->RayCast(position, target->position)) {//if there's something in the way
-						//get nodes closest to positions
-						int startnode = pathNodes->NearestNode(position.x, position.y);
-						int endNode = pathNodes->NearestNode(target->position.x, target->position.y);
+			if (pathNodes->IsConnectedDFS(startNode, endNode)) {//if a path is posible
 
-						if (pathNodes->IsConnectedDFS(startnode, endNode)) {//if a path is posible
-							Path = pathNodes->FindPath(startnode, endNode);//find the path
+				if (frame % 30 == 0) {//if its time to check paths
+
+					for (int j = 0; j < World.size(); j++) {//see if the direct approach is posible
+						if (World[j]->RayCast(position, target->position)) {//if there's something in the way
+
+							Path = pathNodes->FindPath(startNode, endNode);//find the path
+							goToGoalRadius = 50;
 							goToPower = behaiviourArray[i].strength;
 							//smooth
+							break;
 						}
-						break;
 					}
 				}
-			}
 
-			if (Path.size() == 0) {//if we don't have a path
-				velocity += GetPersue(behaiviourArray[i].target, maxVelocity * behaiviourArray[i].strength);
+				if (Path.size() == 0) {//if we don't have a path
+					velocity += GetPersue(behaiviourArray[i].target, maxVelocity * behaiviourArray[i].strength);
+				}
+
 			}
 
 			break;
@@ -200,6 +205,9 @@ void Agent::Update() {
 
 			if (pathTarget.x == -1) {
 				Path.erase(Path.begin());
+				if (Path.size() == 0) {
+					goToGoalRadius = 30;
+				}
 			}
 
 		}
@@ -581,8 +589,26 @@ Point Agent::Cohesion(float in_power, std::vector<Agent*>& ref_neighbourhood) {
 }
 
 void Agent::GoTo(Point in_position, float in_power) {
-	goToPower = in_power;
-	GoToTarget = in_position;
+
+	//get nodes closest to positions
+	int startNode = pathNodes->NearestNode(position.x, position.y);
+	int endNode = pathNodes->NearestNode(in_position.x, in_position.y);
+
+	if (pathNodes->IsConnectedDFS(startNode, endNode)) {
+		goToPower = in_power;
+		GoToTarget = in_position;
+
+		for (int j = 0; j < World.size(); j++) {//see if the direct approach is posible
+			if (World[j]->RayCast(position, in_position)) {//if there's something in the way
+
+				goToGoalRadius = 50;
+				Path = pathNodes->FindPath(startNode, endNode);//find the path
+				//smooth
+				break;
+			}
+		}
+
+	}
 }
 
 Point Agent::GetGoTo(Point& in_target) {
@@ -600,15 +626,15 @@ Point Agent::GetGoTo(Point& in_target) {
 	targetDirectPos.x /= targetDirectDist;
 	targetDirectPos.y /= targetDirectDist;
 
-	if (targetDirectDist > goToGoalRadius * 2) {//if far away then head there at max power
+	if (targetDirectDist > goToGoalRadius * 10) {//if far away then head there at max power
 		out_velocity.x = (targetDirectPos.x * goToPower);
 		out_velocity.y = (targetDirectPos.y * goToPower);
 
 	} else {//if they're close then compensate for distance
 
 		//add to velocity
-		out_velocity.x = (targetDirectPos.x * (goToPower * 0.5f));
-		out_velocity.y = (targetDirectPos.y * (goToPower * 0.5f));
+		out_velocity.x = (targetDirectPos.x * (goToPower /** 0.2f*/));
+		out_velocity.y = (targetDirectPos.y * (goToPower /** 0.2f*/));
 
 	}
 

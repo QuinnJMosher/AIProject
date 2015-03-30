@@ -67,6 +67,9 @@ public:
 
 	std::vector<int> FindPath(int in_name_start, int in_name_end);
 
+	void UseDijkstra();
+	void UseAStar();
+
 	void CreateGrid(int in_nodesWide, int in_nodesTall, float in_width, float in_height);
 	void CreateGrid(int in_nodesWide, int in_nodesTall, float in_width, float in_height, float in_startX, float in_startY);
 
@@ -81,6 +84,7 @@ private:
 
 	int nextNodeName;
 	std::vector<GrNode*>nodes;
+	bool useHeuristic;
 };
 
 std::ostream& operator<<(std::ostream& stream, GrNode& grNode);
