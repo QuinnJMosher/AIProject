@@ -9,10 +9,13 @@ Entity::Entity(float in_x, float in_y, float in_width, float in_height) {
 Entity::~Entity() { }
 
 bool Entity::Collide(Entity& ref_Other) {
-	if (position.x > ref_Other.position.x + ref_Other.width || ref_Other.position.x > position.x + width) {
+	Point thisTopLeft = Point(position.x - (width / 2), position.y - (height / 2));
+	Point otherTopLeft = Point(ref_Other.position.x - (ref_Other.width / 2), ref_Other.position.y - (ref_Other.height / 2));
+
+	if (thisTopLeft.x > otherTopLeft.x + ref_Other.width || otherTopLeft.x > thisTopLeft.x + width) {
 		return false; //no collision
 	}
-	if (position.y > ref_Other.position.y + ref_Other.height || ref_Other.position.y > position.y + height) {
+	if (thisTopLeft.y > otherTopLeft.y + ref_Other.height || otherTopLeft.y > thisTopLeft.y + height) {
 		return false; //no collision
 	}
 	return true;
